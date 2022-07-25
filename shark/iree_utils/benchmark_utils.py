@@ -72,6 +72,7 @@ def build_benchmark_args(
         benchmark_cl.append(f"--function_input={mlir_input}")
     time_extractor = "| awk 'END{{print $2 $3}}'"
     benchmark_cl.append(time_extractor)
+    print(f"===The benchmark command:\n { ' '.join(benchmark_cl) }\n===")
     return benchmark_cl
 
 

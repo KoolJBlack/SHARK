@@ -74,18 +74,41 @@ class SharkRunner:
             device_driver_info(self.device)
             sys.exit(1)
 
+        # Use intercept
+        flatbuffer_blob = None
+        if False:
+            directory = os.getcwd()
+            frontend = "torch"
+            module_name = f"{frontend}_{function_name}_{device}"
+            filename = os.path.join(directory, "intercept", module_name + ".vmfb")
+            print(f"Reading vmfb intercept from {filename}")
+            with open(filename, "rb") as f:
+                flatbuffer_blob = f.read()
+
         # Compile the module to get the .vmfb.
         (
             self.iree_compilation_module,
-            self.iree_config,
+            self.iree_config, self.flat_buffer_blob
         ) = get_iree_compiled_module(
             self.mlir_module,
             self.device,
             self.mlir_dialect,
             func_name=self.function_name,
+            flatbuffer_blob=flatbuffer_blob,
         )
 
+        # Save intercept
+        if True:
+            directory = os.getcwd()
+            frontend = "torch"
+            module_name = f"{frontend}_{function_name}_{device}"
+            filename = os.path.join(directory, "intercept", module_name + ".vmfb")
+            print(f"Saving vmfb intercept to {filename}")
+            with open(filename, "wb") as f:
+                f.write(self.flat_buffer_blob)
+
     def run(self, inputs: tuple):
+        print(f"The inputs: {inputs}")
         return get_results(
             self.iree_compilation_module,
             inputs,

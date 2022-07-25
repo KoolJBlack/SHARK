@@ -75,6 +75,20 @@ def compile_module_to_flatbuffer(
 
     # TODO: make it simpler.
     # Compile according to the input type, else just try compiling.
+    print(f"Compile target_backends: {IREE_TARGET_MAP[device]}")
+    print(f"Compile extra_args: {args}")
+    print(f"Compile input_type: {input_type}")
+    print(f"This is compile module info: {ireec.__file__}")
+    print(f"This is runtime module info: {ireert.__file__}")
+
+    # force_tensorcore = True
+    # enable_tensorcore_flag = "--iree-hal-cuda-llvm-target-arch=sm_80"
+    # if enable_tensorcore_flag not in args:
+    #     print(f"Not using tensorcore!!!")
+    #     if force_tensorcore and IREE_TARGET_MAP[device] == "cuda":
+    #         print(f"Manually adding tensorcore flag!")
+    #         args.append(enable_tensorcore_flag)
+
     if input_type not in ["mhlo", "tosa"]:
         module = str(module)
     if input_type != "":
@@ -112,12 +126,16 @@ def get_iree_compiled_module(
     frontend: str = "torch",
     func_name: str = "forward",
     model_config_path: str = None,
+    flatbuffer_blob: bytes = None,
 ):
     """Given a module returns the compiled .vmfb and configs"""
-    flatbuffer_blob = compile_module_to_flatbuffer(
-        module, device, frontend, func_name, model_config_path
-    )
-    return get_iree_module(flatbuffer_blob, device, func_name)
+    if not flatbuffer_blob:
+        flatbuffer_blob = compile_module_to_flatbuffer(
+            module, device, frontend, func_name, model_config_path
+        )
+    print(f"The type of buffer: {type(flatbuffer_blob)}")
+    compilation_module, config = get_iree_module(flatbuffer_blob, device, func_name)
+    return compilation_module, config, flatbuffer_blob
 
 
 def export_iree_module_to_vmfb(

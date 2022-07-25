@@ -75,7 +75,7 @@ class SharkInference:
 
         if self.is_benchmark == True:
             from shark.shark_benchmark_runner import SharkBenchmarkRunner
-
+            print(f"shark_inference.py:: doing SharkBenchmarkRunner")
             self.shark_runner = SharkBenchmarkRunner(
                 self.mlir_module,
                 self.function_name,
@@ -84,6 +84,7 @@ class SharkInference:
             )
 
         else:
+            print(f"shark_inference.py:: doing SharkRunner")
             self.shark_runner = SharkRunner(
                 self.mlir_module,
                 self.function_name,

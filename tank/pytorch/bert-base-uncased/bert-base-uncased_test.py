@@ -60,6 +60,9 @@ class BertBaseUncasedModuleTest(unittest.TestCase):
     @pytest.fixture(autouse=True)
     def configure(self, pytestconfig):
         self.module_tester = BertBaseUncasedModuleTester(self)
+        print(f"\nsave_mlir: {pytestconfig.getoption('save_mlir')}")
+        print(f"save_vmfb: {pytestconfig.getoption('save_vmfb')}")
+        print(f"benchmark: {pytestconfig.getoption('benchmark')}")
         self.module_tester.benchmark = pytestconfig.getoption("benchmark")
 
     def test_module_static_cpu(self):

@@ -31,6 +31,7 @@ class DistilBertModuleTester:
 class DistilBertModuleTest(unittest.TestCase):
     @pytest.fixture(autouse=True)
     def configure(self, pytestconfig):
+        print(f"\nbenchmark: {pytestconfig.getoption('benchmark')}")
         self.module_tester = DistilBertModuleTester(self)
         self.module_tester.benchmark = pytestconfig.getoption("benchmark")
 
